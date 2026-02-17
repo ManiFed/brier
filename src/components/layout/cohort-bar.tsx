@@ -1,6 +1,6 @@
 "use client";
 
-import { AlertCircle, CheckCircle, Loader2 } from "lucide-react";
+import { AlertCircle, CheckCircle, Loader2, Triangle } from "lucide-react";
 import type { CohortSummary } from "@/lib/scoring/types";
 
 interface CohortBarProps {
@@ -12,7 +12,7 @@ interface CohortBarProps {
 export function CohortBar({ summary, loading, error }: CohortBarProps) {
   if (error) {
     return (
-      <div className="mt-4 flex items-center gap-2 rounded-md border border-destructive/50 bg-destructive/5 px-4 py-2 text-sm text-destructive">
+      <div className="mt-5 flex items-center gap-2.5 rounded-xl border border-destructive/30 bg-destructive/5 px-5 py-3 text-sm text-destructive glass-card">
         <AlertCircle className="h-4 w-4 flex-shrink-0" />
         <span>Error loading markets: {error}</span>
       </div>
@@ -21,8 +21,8 @@ export function CohortBar({ summary, loading, error }: CohortBarProps) {
 
   if (loading || !summary) {
     return (
-      <div className="mt-4 flex items-center gap-2 rounded-md border border-border bg-muted/50 px-4 py-2 text-sm text-muted-foreground">
-        <Loader2 className="h-4 w-4 animate-spin flex-shrink-0" />
+      <div className="mt-5 flex items-center gap-2.5 rounded-xl glass-card px-5 py-3 text-sm text-muted-foreground">
+        <Loader2 className="h-4 w-4 animate-spin flex-shrink-0 text-primary/60" />
         <span>Loading markets...</span>
       </div>
     );
@@ -41,46 +41,51 @@ export function CohortBar({ summary, loading, error }: CohortBarProps) {
     .join(", ");
 
   return (
-    <div className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-1 rounded-md border border-border bg-muted/30 px-4 py-2 text-xs text-muted-foreground">
+    <div className="mt-5 flex flex-wrap items-center gap-x-5 gap-y-1.5 rounded-xl glass-card px-5 py-3 text-xs text-muted-foreground">
       <div className="flex items-center gap-1.5">
-        <CheckCircle className="h-3.5 w-3.5 text-green-600" />
+        <CheckCircle className="h-3.5 w-3.5 text-emerald-500" />
         <span>
-          Scoring <strong className="text-foreground">{summary.scored}</strong>{" "}
+          Scoring <strong className="text-foreground font-semibold">{summary.scored}</strong>{" "}
           markets
         </span>
       </div>
 
       {summary.excluded > 0 && (
         <div className="flex items-center gap-1.5">
+          <Triangle className="h-3 w-3 text-amber-500" />
           <span>
             Excluded{" "}
-            <strong className="text-foreground">{summary.excluded}</strong>
+            <strong className="text-foreground font-semibold">{summary.excluded}</strong>
           </span>
           {exclusionDetails && (
-            <span className="text-muted-foreground/70">
+            <span className="text-muted-foreground/50">
               ({exclusionDetails})
             </span>
           )}
         </div>
       )}
 
-      <div className="hidden sm:block">Horizon: {horizonLabel}</div>
+      <div className="hidden sm:flex items-center gap-1.5">
+        <span className="bg-primary/10 text-primary/80 px-2 py-0.5 rounded-full text-[10px] font-medium">
+          {horizonLabel}
+        </span>
+      </div>
 
       {summary.resolutionWindow && (
-        <div className="hidden md:block">
-          {summary.resolutionWindow.start.toLocaleDateString()} -{" "}
+        <div className="hidden md:block text-muted-foreground/70">
+          {summary.resolutionWindow.start.toLocaleDateString()} &ndash;{" "}
           {summary.resolutionWindow.end.toLocaleDateString()}
         </div>
       )}
 
       {summary.topics.length > 0 && summary.topics.length <= 3 && (
-        <div className="hidden lg:block">
+        <div className="hidden lg:block text-muted-foreground/70">
           Topics: {summary.topics.join(", ")}
         </div>
       )}
 
       {summary.clipRate > 0 && (
-        <div className="hidden lg:block">
+        <div className="hidden lg:block text-muted-foreground/70">
           Clip rate: {(summary.clipRate * 100).toFixed(1)}%
         </div>
       )}

@@ -11,7 +11,7 @@ export function ExchangeSelect() {
 
   return (
     <div>
-      <label className="text-xs font-medium text-muted-foreground mb-2 block">
+      <label className="text-xs font-semibold text-muted-foreground mb-2 block tracking-wide">
         Exchanges
       </label>
       <div className="space-y-1">
@@ -25,20 +25,22 @@ export function ExchangeSelect() {
             <button
               key={exchange}
               onClick={() => toggleExchange(exchange)}
-              className={`flex items-center gap-2 w-full rounded-md px-2 py-1.5 text-sm transition-colors ${
+              className={`flex items-center gap-2.5 w-full rounded-lg px-3 py-2 text-sm transition-all ${
                 selected
-                  ? "bg-accent text-accent-foreground"
-                  : "text-muted-foreground hover:bg-accent/50"
+                  ? "bg-accent/60 text-accent-foreground"
+                  : "text-muted-foreground hover:bg-accent/30"
               }`}
             >
               <span
-                className="h-3 w-3 rounded-full flex-shrink-0 border-2"
+                className="h-3 w-3 rounded-full flex-shrink-0 ring-1 ring-white/30 transition-all"
                 style={{
                   backgroundColor: selected ? color : "transparent",
                   borderColor: color,
+                  borderWidth: selected ? 0 : 2,
+                  borderStyle: "solid",
                 }}
               />
-              <span className="capitalize">{exchange}</span>
+              <span className="capitalize font-medium">{exchange}</span>
             </button>
           );
         })}
@@ -46,7 +48,7 @@ export function ExchangeSelect() {
       {selectedExchanges.length > 0 && (
         <button
           onClick={() => useDashboardStore.getState().setSelectedExchanges([])}
-          className="mt-1 text-[10px] text-muted-foreground hover:text-foreground"
+          className="mt-1.5 text-[10px] text-primary/60 hover:text-primary font-medium"
         >
           Show all
         </button>

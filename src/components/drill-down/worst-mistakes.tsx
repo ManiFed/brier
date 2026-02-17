@@ -46,29 +46,29 @@ export function WorstMistakes({ markets, loading }: WorstMistakesProps) {
     : worstByExchange;
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div className="rounded-xl glass-card gradient-border">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="flex w-full items-center gap-2 px-4 py-3 text-sm font-medium hover:bg-accent/50 transition-colors"
+        className="flex w-full items-center gap-2.5 px-5 py-3.5 text-sm font-semibold hover:bg-accent/30 transition-colors rounded-xl"
       >
         {collapsed ? (
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <ChevronRight className="h-4 w-4 text-primary/50" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-4 w-4 text-primary/50" />
         )}
         <span>Worst Mistakes (Top Surprises)</span>
       </button>
 
       {!collapsed && (
-        <div className="px-4 pb-4">
+        <div className="px-5 pb-5">
           {/* Exchange filter tabs */}
-          <div className="flex gap-1 mb-3">
+          <div className="flex gap-1.5 mb-4">
             <button
               onClick={() => setSelectedExchange(null)}
-              className={`text-xs rounded px-2 py-0.5 transition-colors ${
+              className={`text-xs rounded-full px-3 py-1 font-medium transition-all ${
                 selectedExchange === null
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-accent"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-muted/60 text-muted-foreground hover:bg-accent"
               }`}
             >
               All
@@ -77,10 +77,10 @@ export function WorstMistakes({ markets, loading }: WorstMistakesProps) {
               <button
                 key={exchange}
                 onClick={() => setSelectedExchange(exchange)}
-                className={`flex items-center gap-1 text-xs rounded px-2 py-0.5 transition-colors ${
+                className={`flex items-center gap-1.5 text-xs rounded-full px-3 py-1 font-medium transition-all ${
                   selectedExchange === exchange
-                    ? "bg-primary text-primary-foreground"
-                    : "bg-muted text-muted-foreground hover:bg-accent"
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "bg-muted/60 text-muted-foreground hover:bg-accent"
                 }`}
               >
                 <span
@@ -98,30 +98,30 @@ export function WorstMistakes({ markets, loading }: WorstMistakesProps) {
           {displayed.map(({ exchange, worst }) => (
             <div key={exchange} className="mb-4 last:mb-0">
               {!selectedExchange && (
-                <div className="flex items-center gap-1.5 mb-2">
+                <div className="flex items-center gap-2 mb-2">
                   <span
-                    className="h-2.5 w-2.5 rounded-full"
+                    className="h-2.5 w-2.5 rounded-full ring-1 ring-white/50"
                     style={{
                       backgroundColor: getExchangeColor(exchange),
                     }}
                   />
-                  <span className="text-xs font-medium capitalize">
+                  <span className="text-xs font-semibold capitalize">
                     {exchange}
                   </span>
                 </div>
               )}
-              <div className="space-y-1">
+              <div className="space-y-0.5">
                 {worst.slice(0, 10).map((market, i) => (
                   <div
                     key={market.id}
-                    className="flex items-start gap-2 rounded-md px-2 py-1.5 text-xs hover:bg-accent/50"
+                    className="flex items-start gap-2.5 rounded-lg px-3 py-2 text-xs hover:bg-accent/30 transition-colors"
                   >
-                    <span className="text-muted-foreground w-4 text-right flex-shrink-0">
+                    <span className="text-muted-foreground/50 w-4 text-right flex-shrink-0 font-mono text-[10px] pt-0.5">
                       {i + 1}
                     </span>
                     <div className="flex-1 min-w-0">
-                      <div className="truncate">{market.title}</div>
-                      <div className="text-muted-foreground flex gap-2 mt-0.5">
+                      <div className="truncate font-medium">{market.title}</div>
+                      <div className="text-muted-foreground flex gap-3 mt-1">
                         <span>
                           P={" "}
                           {(market.sampledProbability * 100).toFixed(0)}%
@@ -129,13 +129,13 @@ export function WorstMistakes({ markets, loading }: WorstMistakesProps) {
                         <span
                           className={
                             market.outcome === 1
-                              ? "text-green-600"
-                              : "text-red-600"
+                              ? "text-emerald-600 font-medium"
+                              : "text-red-500 font-medium"
                           }
                         >
                           {market.outcome === 1 ? "Yes" : "No"}
                         </span>
-                        <span>
+                        <span className="text-amber-600">
                           Surprise:{" "}
                           {(surpriseScore(market) * 100).toFixed(0)}%
                         </span>

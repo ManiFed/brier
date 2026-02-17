@@ -51,7 +51,7 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
       .domain(isResiduals ? [-0.5, 0.5] : [0, 1])
       .range([height, 0]);
 
-    // Grid lines
+    // Grid lines — subtle geometric aesthetic
     g.append("g")
       .attr("class", "grid")
       .call(
@@ -62,38 +62,38 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
       )
       .call((g) => g.select(".domain").remove())
       .call((g) =>
-        g.selectAll(".tick line").attr("stroke", "#e5e5e5").attr("stroke-dasharray", "2,2")
+        g.selectAll(".tick line").attr("stroke", "#c7d2fe").attr("stroke-dasharray", "2,4").attr("opacity", 0.4)
       );
 
     // Reference line
     if (isResiduals) {
-      // Zero line for residuals
       g.append("line")
         .attr("x1", 0)
         .attr("x2", width)
         .attr("y1", yScale(0))
         .attr("y2", yScale(0))
-        .attr("stroke", "#a3a3a3")
+        .attr("stroke", "#818cf8")
         .attr("stroke-width", 1.5)
-        .attr("stroke-dasharray", "4,4");
+        .attr("stroke-dasharray", "6,4")
+        .attr("opacity", 0.5);
     } else {
-      // Perfect calibration diagonal
       g.append("line")
         .attr("x1", xScale(0))
         .attr("y1", yScale(0))
         .attr("x2", xScale(1))
         .attr("y2", yScale(1))
-        .attr("stroke", "#a3a3a3")
+        .attr("stroke", "#818cf8")
         .attr("stroke-width", 1.5)
-        .attr("stroke-dasharray", "4,4");
+        .attr("stroke-dasharray", "6,4")
+        .attr("opacity", 0.5);
     }
 
     // Axes
     g.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(xScale).ticks(10).tickFormat(d3.format(".0%")))
-      .call((g) => g.select(".domain").attr("stroke", "#d4d4d4"))
-      .call((g) => g.selectAll(".tick text").attr("fill", "#737373").attr("font-size", "11px"));
+      .call((g) => g.select(".domain").attr("stroke", "#c7d2fe").attr("opacity", 0.5))
+      .call((g) => g.selectAll(".tick text").attr("fill", "#6366f1").attr("font-size", "11px").attr("opacity", 0.7));
 
     g.append("g")
       .call(
@@ -102,16 +102,17 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
           .ticks(10)
           .tickFormat(d3.format(isResiduals ? "+.0%" : ".0%"))
       )
-      .call((g) => g.select(".domain").attr("stroke", "#d4d4d4"))
-      .call((g) => g.selectAll(".tick text").attr("fill", "#737373").attr("font-size", "11px"));
+      .call((g) => g.select(".domain").attr("stroke", "#c7d2fe").attr("opacity", 0.5))
+      .call((g) => g.selectAll(".tick text").attr("fill", "#6366f1").attr("font-size", "11px").attr("opacity", 0.7));
 
     // Axis labels
     g.append("text")
       .attr("x", width / 2)
       .attr("y", height + 40)
       .attr("text-anchor", "middle")
-      .attr("fill", "#737373")
+      .attr("fill", "#6366f1")
       .attr("font-size", "12px")
+      .attr("opacity", 0.7)
       .text("Predicted Probability");
 
     g.append("text")
@@ -119,8 +120,9 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
       .attr("x", -height / 2)
       .attr("y", -38)
       .attr("text-anchor", "middle")
-      .attr("fill", "#737373")
+      .attr("fill", "#6366f1")
       .attr("font-size", "12px")
+      .attr("opacity", 0.7)
       .text(isResiduals ? "Residual (Observed - Predicted)" : "Observed Frequency");
 
     // Draw exchange lines
@@ -138,7 +140,7 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
       .join("div")
       .attr(
         "class",
-        "chart-tooltip absolute pointer-events-none bg-popover text-popover-foreground border border-border rounded-md shadow-md px-3 py-2 text-xs opacity-0 z-50"
+        "chart-tooltip absolute pointer-events-none bg-popover text-popover-foreground border border-border rounded-lg shadow-lg px-3 py-2 text-xs opacity-0 z-50"
       );
 
     for (const exchangeData of byExchange) {
@@ -149,7 +151,7 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
       const color = getExchangeColor(exchange);
       const isPinned =
         pinnedExchanges.length === 0 || pinnedExchanges.includes(exchange);
-      const opacity = isPinned ? 1 : 0.2;
+      const opacity = isPinned ? 1 : 0.15;
 
       // CI area
       const area = d3
@@ -175,7 +177,7 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
         .datum(bins)
         .attr("d", area)
         .attr("fill", color)
-        .attr("opacity", opacity * 0.1);
+        .attr("opacity", opacity * 0.12);
 
       // Line
       g.append("path")
@@ -183,7 +185,7 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
         .attr("d", line)
         .attr("fill", "none")
         .attr("stroke", color)
-        .attr("stroke-width", 2)
+        .attr("stroke-width", 2.5)
         .attr("opacity", opacity);
 
       // Points
@@ -197,7 +199,7 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
         .attr("r", (d) => Math.max(3, Math.min(8, Math.sqrt(d.count))))
         .attr("fill", color)
         .attr("stroke", "white")
-        .attr("stroke-width", 1.5)
+        .attr("stroke-width", 2)
         .attr("opacity", opacity)
         .attr("cursor", "pointer")
         .on("mouseover", function (event, d) {
@@ -207,12 +209,12 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
           tooltip
             .style("opacity", "1")
             .html(
-              `<div class="font-medium">${exchange}</div>
-               <div>Bin: ${(d.binEdgeLow * 100).toFixed(0)}%-${(d.binEdgeHigh * 100).toFixed(0)}%</div>
+              `<div class="font-semibold capitalize">${exchange}</div>
+               <div class="mt-1">Bin: ${(d.binEdgeLow * 100).toFixed(0)}%\u2013${(d.binEdgeHigh * 100).toFixed(0)}%</div>
                <div>Predicted: ${(d.meanPredicted * 100).toFixed(1)}%</div>
                <div>Observed: ${(d.observedFrequency * 100).toFixed(1)}%</div>
                <div>Residual: ${(d.residual * 100).toFixed(1)}%</div>
-               <div>n = ${d.count}</div>`
+               <div class="mt-1 text-muted-foreground">n = ${d.count}</div>`
             )
             .style("left", `${event.offsetX + 12}px`)
             .style("top", `${event.offsetY - 12}px`);
@@ -238,11 +240,11 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
 
   if (loading) {
     return (
-      <div className="rounded-lg border border-border bg-card p-6">
-        <div className="animate-pulse">
-          <div className="h-6 w-48 bg-muted rounded mb-4" />
+      <div className="rounded-xl glass-card gradient-border p-6">
+        <div>
+          <div className="h-5 w-48 prism-loading rounded mb-4" />
           <div
-            className="bg-muted rounded"
+            className="prism-loading rounded-lg"
             style={{ height: CHART_HEIGHT }}
           />
         </div>
@@ -251,20 +253,19 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-6">
+    <div className="rounded-xl glass-card gradient-border p-6">
       {/* Header with view toggle */}
-      <div className="flex items-center justify-between mb-4">
-        <h2 className="text-sm font-medium">Calibration Chart</h2>
+      <div className="flex items-center justify-between mb-5">
+        <h2 className="text-sm font-semibold tracking-tight">Calibration Chart</h2>
         <div className="flex items-center gap-2">
-          {/* View toggle */}
-          <div className="flex gap-1 bg-muted rounded-md p-0.5">
+          <div className="flex gap-0.5 bg-muted/60 rounded-lg p-0.5">
             {(["reliability", "residuals"] as const).map((view) => (
               <button
                 key={view}
                 onClick={() => setCalibrationView(view)}
-                className={`rounded px-3 py-1 text-xs font-medium capitalize transition-colors ${
+                className={`rounded-md px-3 py-1.5 text-xs font-medium capitalize transition-all ${
                   calibrationView === view
-                    ? "bg-background text-foreground shadow-sm"
+                    ? "bg-white text-foreground shadow-sm"
                     : "text-muted-foreground hover:text-foreground"
                 }`}
               >
@@ -289,15 +290,17 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
                   ? unpinExchange(exchange)
                   : pinExchange(exchange)
               }
-              className={`flex items-center gap-1.5 text-xs transition-opacity ${
-                isPinned ? "opacity-100" : "opacity-40"
+              className={`flex items-center gap-1.5 text-xs px-2 py-1 rounded-full transition-all ${
+                isPinned
+                  ? "opacity-100 bg-muted/50"
+                  : "opacity-30 hover:opacity-50"
               }`}
             >
               <span
-                className="h-2.5 w-2.5 rounded-full"
+                className="h-2.5 w-2.5 rounded-full ring-1 ring-white/50"
                 style={{ backgroundColor: color }}
               />
-              <span className="capitalize">{exchange}</span>
+              <span className="capitalize font-medium">{exchange}</span>
               <span className="text-muted-foreground">({sampleSize})</span>
             </button>
           );
