@@ -10,6 +10,7 @@ import type { ProbabilityPoint } from "./adapters/types";
 import { ManifoldAdapter } from "./adapters/manifold";
 import { MetaculusAdapter } from "./adapters/metaculus";
 import { PolymarketAdapter } from "./adapters/polymarket";
+import { KalshiAdapter } from "./adapters/kalshi";
 
 import {
   createIngestionRun,
@@ -27,6 +28,7 @@ const ADAPTERS: Record<string, () => ExchangeAdapter> = {
   polymarket: () => new PolymarketAdapter(),
   metaculus: () => new MetaculusAdapter(),
   manifold: () => new ManifoldAdapter(),
+  kalshi: () => new KalshiAdapter(),
 };
 
 /**
