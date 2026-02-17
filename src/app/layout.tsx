@@ -4,7 +4,7 @@ import "./globals.css";
 export const metadata: Metadata = {
   title: "Prism — Forecast Accuracy, Refracted",
   description:
-    "Geometric calibration dashboard for evaluating prediction market accuracy with Brier, logarithmic, and spherical scores across exchanges.",
+    "Forecast accuracy dashboard for evaluating prediction market performance with Brier, logarithmic, and spherical scores across exchanges.",
 };
 
 export default function RootLayout({
@@ -14,9 +14,7 @@ export default function RootLayout({
 }>) {
   return (
     <html lang="en">
-      <body className="antialiased bg-background text-foreground">
-        {children}
-      </body>
+      <body className="antialiased bg-background text-foreground">{children}</body>
     </html>
   );
 }

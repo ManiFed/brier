@@ -1,7 +1,8 @@
-import { and, eq, gte, lte, inArray, isNotNull, sql } from "drizzle-orm";
+import { and, eq, gte, lte, inArray, isNotNull } from "drizzle-orm";
 import { markets, probabilityObservations } from "@/lib/db/schema";
 import { db } from "@/lib/db/client";
-import type { EvaluationTime, ScoredMarket, CohortSummary, ExclusionReason, EXCLUSION_REASONS } from "@/lib/scoring/types";
+import type { EvaluationTime, ScoredMarket, CohortSummary, ExclusionReason } from "@/lib/scoring/types";
+import { queryDemoCohort } from "@/lib/data/demo-cohort";
 
 export interface CohortFilters {
   exchanges?: string[];
@@ -73,10 +74,22 @@ export async function queryCohort(
     .where(whereClause)
     .all() as MarketRow[];
 
+
+  if (marketRows.length === 0) {
+    return queryDemoCohort({
+      exchanges: filters.exchanges,
+      topics: filters.topics,
+      series: filters.series,
+      resolutionStart: filters.resolutionStart,
+      resolutionEnd: filters.resolutionEnd,
+      evaluationTime: filters.evaluationTime,
+      horizonToleranceHours: filters.horizonToleranceHours,
+    });
+  }
+
   const scoredMarkets: ScoredMarket[] = [];
   const excludedByReason: Record<string, number> = {};
   let excludedCount = 0;
-  let clipCount = 0;
 
   for (const row of marketRows) {
     // Check for exclusion
@@ -114,8 +127,6 @@ export async function queryCohort(
     // Sample probability based on evaluation time
     let sampledProbability = 0.5;
     let sampledAt = new Date();
-    let hasSample = false;
-
     if (!excluded && row.resolvedAt && observations.length > 0) {
       const result = sampleFromObservations(
         observations,
@@ -127,7 +138,6 @@ export async function queryCohort(
       if (result) {
         sampledProbability = result.probability;
         sampledAt = result.sampledAt;
-        hasSample = true;
       } else {
         excluded = true;
         exclusionReason = "missing_horizon_observation";
