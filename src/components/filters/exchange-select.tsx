@@ -3,7 +3,7 @@
 import { useDashboardStore } from "@/store/dashboard-store";
 import { getExchangeColor } from "@/lib/scoring/types";
 
-const KNOWN_EXCHANGES = ["polymarket", "metaculus", "manifold"];
+const KNOWN_EXCHANGES = ["polymarket", "metaculus", "manifold", "kalshi"];
 
 export function ExchangeSelect() {
   const selectedExchanges = useDashboardStore((s) => s.selectedExchanges);

@@ -43,9 +43,9 @@
   --radius: 0.75rem;
 
   /* Prism — light geometric forecast palette */
-  --background: oklch(0.985 0.004 250);
+  --background: oklch(0.98 0.02 35);
   --foreground: oklch(0.17 0.02 260);
-  --card: oklch(0.995 0.002 250 / 0.8);
+  --card: oklch(0.995 0.01 30 / 0.62);
   --card-foreground: oklch(0.17 0.02 260);
   --popover: oklch(0.995 0.003 250);
   --popover-foreground: oklch(0.17 0.02 260);
@@ -63,7 +63,7 @@
   --input: oklch(0.905 0.015 250);
   --ring: oklch(0.488 0.177 264);
 
-  --sidebar: oklch(0.975 0.008 250 / 0.9);
+  --sidebar: oklch(0.985 0.012 25 / 0.72);
   --sidebar-foreground: oklch(0.17 0.02 260);
   --sidebar-accent: oklch(0.94 0.02 250);
   --sidebar-accent-foreground: oklch(0.25 0.03 260);
@@ -105,22 +105,21 @@ body {
   font-family: var(--font-system);
 }
 
-/* Geometric grid background pattern */
-.geo-grid {
-  background-image:
-    linear-gradient(oklch(0.488 0.177 264 / 0.04) 1px, transparent 1px),
-    linear-gradient(90deg, oklch(0.488 0.177 264 / 0.04) 1px, transparent 1px),
-    linear-gradient(45deg, oklch(0.488 0.177 264 / 0.02) 1px, transparent 1px),
-    linear-gradient(-45deg, oklch(0.488 0.177 264 / 0.02) 1px, transparent 1px);
-  background-size: 60px 60px, 60px 60px, 84.85px 84.85px, 84.85px 84.85px;
+/* Soft pink-orange gradient background */
+.aurora-bg {
+  background:
+    radial-gradient(circle at 10% 15%, oklch(0.9 0.08 20 / 0.35), transparent 38%),
+    radial-gradient(circle at 88% 20%, oklch(0.9 0.09 50 / 0.28), transparent 42%),
+    radial-gradient(circle at 50% 90%, oklch(0.94 0.06 15 / 0.3), transparent 45%),
+    linear-gradient(145deg, oklch(0.985 0.03 15), oklch(0.975 0.025 40));
 }
 
 /* Frosted glass card effect */
 .glass-card {
-  background: oklch(0.995 0.002 250 / 0.7);
+  background: oklch(0.995 0.02 30 / 0.52);
   backdrop-filter: blur(12px);
   -webkit-backdrop-filter: blur(12px);
-  border: 1px solid oklch(0.488 0.177 264 / 0.1);
+  border: 1px solid oklch(0.94 0.03 30 / 0.6);
 }
 
 /* Gradient border effect for highlight cards */

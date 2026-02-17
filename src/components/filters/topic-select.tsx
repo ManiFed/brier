@@ -1,15 +1,23 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { useDashboardStore } from "@/store/dashboard-store";
 
 const COMMON_TOPICS = [
   "Politics",
+  "Elections",
   "Economics",
-  "Sports",
+  "Inflation",
   "Technology",
+  "AI",
   "Science",
+  "Climate",
+  "Space",
   "Crypto",
+  "Sports",
+  "Geopolitics",
+  "Healthcare",
+  "Energy",
   "Entertainment",
   "World Events",
 ];
@@ -18,8 +26,23 @@ export function TopicSelect() {
   const selectedTopics = useDashboardStore((s) => s.selectedTopics);
   const setSelectedTopics = useDashboardStore((s) => s.setSelectedTopics);
   const [expanded, setExpanded] = useState(false);
+  const [apiTopics, setApiTopics] = useState<string[]>([]);
 
-  const visibleTopics = expanded ? COMMON_TOPICS : COMMON_TOPICS.slice(0, 4);
+  useEffect(() => {
+    const run = async () => {
+      const response = await fetch("/api/filter-options");
+      if (!response.ok) return;
+      const data = (await response.json()) as { topics?: string[] };
+      setApiTopics(data.topics ?? []);
+    };
+    run();
+  }, []);
+
+  const mergedTopics = useMemo(() => {
+    return [...new Set([...COMMON_TOPICS, ...apiTopics])];
+  }, [apiTopics]);
+
+  const visibleTopics = expanded ? mergedTopics : mergedTopics.slice(0, 8);
 
   const toggleTopic = (topic: string) => {
     if (selectedTopics.includes(topic)) {
@@ -31,9 +54,7 @@ export function TopicSelect() {
 
   return (
     <div>
-      <label className="text-xs font-medium text-muted-foreground mb-2 block">
-        Topics
-      </label>
+      <label className="text-xs font-medium text-muted-foreground mb-2 block">Topics</label>
       <div className="flex flex-wrap gap-1">
         {visibleTopics.map((topic) => {
           const selected = selectedTopics.includes(topic);
@@ -52,20 +73,12 @@ export function TopicSelect() {
           );
         })}
       </div>
-      {COMMON_TOPICS.length > 4 && (
+      {mergedTopics.length > 8 && (
         <button
           onClick={() => setExpanded(!expanded)}
           className="mt-1 text-[10px] text-muted-foreground hover:text-foreground"
         >
-          {expanded ? "Show less" : `+${COMMON_TOPICS.length - 4} more`}
-        </button>
-      )}
-      {selectedTopics.length > 0 && (
-        <button
-          onClick={() => setSelectedTopics([])}
-          className="mt-1 ml-2 text-[10px] text-muted-foreground hover:text-foreground"
-        >
-          Clear
+          {expanded ? "Show less" : `+${mergedTopics.length - 8} more`}
         </button>
       )}
     </div>
