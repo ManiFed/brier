@@ -139,7 +139,7 @@ export function Sidebar() {
       {/* Footer */}
       <div className="px-5 py-3 border-t border-sidebar-border/60">
         <p className="text-[9px] text-muted-foreground/60 text-center tracking-wider uppercase">
-          Polymarket &middot; Metaculus &middot; Manifold
+          Polymarket &middot; Metaculus &middot; Manifold &middot; Kalshi
         </p>
       </div>
     </aside>
