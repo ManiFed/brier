@@ -1,3 +1,5 @@
+import { mkdirSync } from "fs";
+import { dirname } from "path";
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
 import * as schema from "./schema";
@@ -12,6 +14,7 @@ declare const globalThis: {
 } & typeof global;
 
 function createDrizzle() {
+  mkdirSync(dirname(DATABASE_URL), { recursive: true });
   const sqlite = new Database(DATABASE_URL);
 
   // Enable WAL mode for better concurrent read performance
