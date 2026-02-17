@@ -30,6 +30,10 @@ function withOffsets(resolvedAt: Date, values: Array<[number, number]>) {
   }));
 }
 
+function isDefinedString(value: string | null): value is string {
+  return value !== null;
+}
+
 export const DEMO_MARKETS: DemoMarket[] = [
   {
     id: "demo-polymarket-us-election-2024",
@@ -352,7 +356,7 @@ export function queryDemoCohort(filters: {
         ? { start: filters.resolutionStart, end: filters.resolutionEnd }
         : null,
     topics: [...new Set(filtered.map((m) => m.topic))],
-    series: [...new Set(filtered.map((m) => m.series).filter(Boolean))] as string[],
+    series: [...new Set(filtered.map((m) => m.series).filter(isDefinedString))],
     clipRate: 0,
   };
 
@@ -362,6 +366,6 @@ export function queryDemoCohort(filters: {
 export function getDemoFilterOptions() {
   return {
     topics: [...new Set(DEMO_MARKETS.map((m) => m.topic))].sort((a, b) => a.localeCompare(b)),
-    series: [...new Set(DEMO_MARKETS.map((m) => m.series).filter(Boolean))].sort((a, b) => a.localeCompare(b)) as string[],
+    series: [...new Set(DEMO_MARKETS.map((m) => m.series).filter(isDefinedString))].sort((a, b) => a.localeCompare(b)),
   };
 }
