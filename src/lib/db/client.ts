@@ -18,6 +18,9 @@ function createDrizzle() {
   mkdirSync(dirname(DATABASE_URL), { recursive: true });
   const sqlite = new Database(DATABASE_URL);
 
+  // Wait for transient lock contention (e.g. parallel Next.js build workers)
+  sqlite.pragma("busy_timeout = 5000");
+
   // Enable WAL mode for better concurrent read performance
   sqlite.pragma("journal_mode = WAL");
 
