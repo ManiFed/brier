@@ -27,7 +27,7 @@ interface MarketRow {
   volume: number | null;
   liquidity: number | null;
   createdAt: number;
-  tags: string;
+  tags: string[] | string | null;
 }
 
 interface ObservationRow {
@@ -138,10 +138,14 @@ export async function queryCohort(
     }
 
     let tags: string[] = [];
-    try {
-      tags = JSON.parse(row.tags || "[]");
-    } catch {
-      tags = [];
+    if (Array.isArray(row.tags)) {
+      tags = row.tags;
+    } else {
+      try {
+        tags = JSON.parse(row.tags || "[]");
+      } catch {
+        tags = [];
+      }
     }
 
     scoredMarkets.push({
