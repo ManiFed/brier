@@ -201,9 +201,9 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
         .attr("opacity", opacity)
         .attr("cursor", "pointer")
         .on("mouseover", function (event, d) {
-          d3.select(this).attr("r", (d: CalibrationBin) =>
-            Math.max(5, Math.min(10, Math.sqrt(d.count) + 2))
-          );
+          d3
+            .select(this)
+            .attr("r", Math.max(5, Math.min(10, Math.sqrt(d.count) + 2)));
           tooltip
             .style("opacity", "1")
             .html(
@@ -217,10 +217,8 @@ export function CalibrationChart({ byExchange, loading }: CalibrationChartProps)
             .style("left", `${event.offsetX + 12}px`)
             .style("top", `${event.offsetY - 12}px`);
         })
-        .on("mouseout", function () {
-          d3.select(this).attr("r", (d: CalibrationBin) =>
-            Math.max(3, Math.min(8, Math.sqrt(d.count)))
-          );
+        .on("mouseout", function (_, d) {
+          d3.select(this).attr("r", Math.max(3, Math.min(8, Math.sqrt(d.count))));
           tooltip.style("opacity", "0");
         })
         .on("click", (_, d) => {
