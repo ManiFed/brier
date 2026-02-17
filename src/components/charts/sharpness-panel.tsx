@@ -47,7 +47,7 @@ function MiniHistogram({
       .scaleBand()
       .domain(distribution.map((_, i) => String(i)))
       .range([0, w])
-      .padding(0.1);
+      .padding(0.15);
 
     const yMax = Math.max(...distribution, 1);
     const yScale = d3.scaleLinear().domain([0, yMax]).range([h, 0]);
@@ -60,14 +60,16 @@ function MiniHistogram({
       .attr("width", xScale.bandwidth())
       .attr("height", (d) => h - yScale(d))
       .attr("fill", color)
-      .attr("opacity", 0.7);
+      .attr("opacity", 0.65)
+      .attr("rx", 1);
 
-    // X axis labels (0%, 50%, 100%)
+    // X axis labels
     g.append("text")
       .attr("x", 0)
       .attr("y", h + 14)
       .attr("font-size", "9px")
-      .attr("fill", "#737373")
+      .attr("fill", "#6366f1")
+      .attr("opacity", 0.6)
       .text("0%");
 
     g.append("text")
@@ -75,7 +77,8 @@ function MiniHistogram({
       .attr("y", h + 14)
       .attr("text-anchor", "middle")
       .attr("font-size", "9px")
-      .attr("fill", "#737373")
+      .attr("fill", "#6366f1")
+      .attr("opacity", 0.6)
       .text("50%");
 
     g.append("text")
@@ -83,21 +86,22 @@ function MiniHistogram({
       .attr("y", h + 14)
       .attr("text-anchor", "end")
       .attr("font-size", "9px")
-      .attr("fill", "#737373")
+      .attr("fill", "#6366f1")
+      .attr("opacity", 0.6)
       .text("100%");
   }, [distribution, color]);
 
   return (
     <div className="flex flex-col items-center">
-      <div className="flex items-center gap-1.5 mb-1">
+      <div className="flex items-center gap-1.5 mb-1.5">
         <span
-          className="h-2 w-2 rounded-full"
+          className="h-2.5 w-2.5 rounded-full ring-1 ring-white/50"
           style={{ backgroundColor: color }}
         />
-        <span className="text-xs font-medium capitalize">{label}</span>
+        <span className="text-xs font-semibold capitalize">{label}</span>
       </div>
       <svg ref={svgRef} />
-      <span className="text-[10px] text-muted-foreground mt-1">
+      <span className="text-[10px] text-muted-foreground/70 mt-1.5">
         Entropy: {entropy.toFixed(3)}
       </span>
     </div>
@@ -110,20 +114,20 @@ export function SharpnessPanel({ byExchange, loading }: SharpnessPanelProps) {
   if (loading || byExchange.length === 0) return null;
 
   return (
-    <div className="rounded-lg border border-border bg-card">
+    <div className="rounded-xl glass-card gradient-border">
       <button
         onClick={() => setCollapsed(!collapsed)}
-        className="flex w-full items-center gap-2 px-4 py-3 text-sm font-medium hover:bg-accent/50 transition-colors"
+        className="flex w-full items-center gap-2.5 px-5 py-3.5 text-sm font-semibold hover:bg-accent/30 transition-colors rounded-xl"
       >
         {collapsed ? (
-          <ChevronRight className="h-4 w-4 text-muted-foreground" />
+          <ChevronRight className="h-4 w-4 text-primary/50" />
         ) : (
-          <ChevronDown className="h-4 w-4 text-muted-foreground" />
+          <ChevronDown className="h-4 w-4 text-primary/50" />
         )}
         <span>Sharpness / Probability Distribution</span>
       </button>
       {!collapsed && (
-        <div className="px-4 pb-4">
+        <div className="px-5 pb-5">
           <div className="flex flex-wrap gap-6">
             {byExchange.map(({ exchange, sharpness }) => (
               <MiniHistogram

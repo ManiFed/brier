@@ -30,7 +30,6 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
     const included = markets.filter((m) => !m.excluded);
     if (included.length === 0) return [];
 
-    // Group by exchange
     const groups = new Map<string, ScoredMarket[]>();
     for (const m of included) {
       const group = groups.get(m.exchange) || [];
@@ -38,7 +37,6 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
       groups.set(m.exchange, group);
     }
 
-    // Get time range
     const dates = included.map((m) => m.resolvedAt.getTime());
     const minDate = Math.min(...dates);
     const maxDate = Math.max(...dates);
@@ -108,13 +106,14 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
     g.append("g")
       .attr("transform", `translate(0,${height})`)
       .call(d3.axisBottom(xScale).ticks(6))
-      .call((g) => g.selectAll("text").attr("font-size", "10px").attr("fill", "#737373"));
+      .call((g) => g.select(".domain").attr("stroke", "#c7d2fe").attr("opacity", 0.5))
+      .call((g) => g.selectAll("text").attr("font-size", "10px").attr("fill", "#6366f1").attr("opacity", 0.7));
 
     g.append("g")
       .call(d3.axisLeft(yScale).ticks(5))
-      .call((g) => g.selectAll("text").attr("font-size", "10px").attr("fill", "#737373"));
+      .call((g) => g.select(".domain").attr("stroke", "#c7d2fe").attr("opacity", 0.5))
+      .call((g) => g.selectAll("text").attr("font-size", "10px").attr("fill", "#6366f1").attr("opacity", 0.7));
 
-    // Group by exchange
     const exchanges = [...new Set(trendData.map((d) => d.exchange))];
 
     for (const exchange of exchanges) {
@@ -135,9 +134,8 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
         .attr("d", line)
         .attr("fill", "none")
         .attr("stroke", color)
-        .attr("stroke-width", 1.5);
+        .attr("stroke-width", 2);
 
-      // Label at end
       if (data.length > 0) {
         const last = data[data.length - 1];
         g.append("text")
@@ -146,6 +144,7 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
           .attr("dy", "0.35em")
           .attr("fill", color)
           .attr("font-size", "10px")
+          .attr("font-weight", "600")
           .text(exchange);
       }
     }
@@ -153,11 +152,11 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
 
   if (loading || trendData.length === 0) {
     return (
-      <div className="rounded-lg border border-border bg-card p-4">
-        <h3 className="text-sm font-medium text-muted-foreground mb-2">
+      <div className="rounded-xl glass-card gradient-border p-5">
+        <h3 className="text-sm font-semibold text-muted-foreground mb-2">
           Score Trend (Rolling {rollingWindowDays}d)
         </h3>
-        <div className="text-xs text-muted-foreground">
+        <div className="text-xs text-muted-foreground/70">
           {loading
             ? "Loading..."
             : "Not enough data for rolling windows (need 5+ markets per window)"}
@@ -167,8 +166,8 @@ export function ScoreTrend({ markets, loading }: ScoreTrendProps) {
   }
 
   return (
-    <div className="rounded-lg border border-border bg-card p-4">
-      <h3 className="text-sm font-medium mb-2">
+    <div className="rounded-xl glass-card gradient-border p-5">
+      <h3 className="text-sm font-semibold mb-3">
         Brier Score Trend (Rolling {rollingWindowDays}d window, {rollingStepDays}d step)
       </h3>
       <div ref={containerRef}>

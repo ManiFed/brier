@@ -14,7 +14,7 @@ type SortMode = "surprise" | "probability" | "closest_to_half";
 
 function surpriseScore(m: ScoredMarket): number {
   const p = m.outcome === 1 ? m.sampledProbability : 1 - m.sampledProbability;
-  return 1 - p; // higher = more surprising
+  return 1 - p;
 }
 
 export function BinDrawer({ open, byExchange }: BinDrawerProps) {
@@ -68,43 +68,42 @@ export function BinDrawer({ open, byExchange }: BinDrawerProps) {
     <>
       {/* Backdrop */}
       <div
-        className="fixed inset-0 bg-black/20 z-40"
+        className="fixed inset-0 bg-black/20 backdrop-blur-[2px] z-40"
         onClick={() => setDrawerOpen(false)}
       />
 
       {/* Drawer */}
       <div
         ref={drawerRef}
-        className="fixed right-0 top-0 h-full w-full max-w-md bg-card border-l border-border shadow-xl z-50 overflow-y-auto"
+        className="fixed right-0 top-0 h-full w-full max-w-md bg-card/95 backdrop-blur-xl border-l border-border/60 shadow-2xl z-50 overflow-y-auto"
       >
         {/* Header */}
-        <div className="sticky top-0 bg-card border-b border-border px-4 py-3 flex items-center justify-between">
+        <div className="sticky top-0 bg-card/95 backdrop-blur-xl border-b border-border/60 px-5 py-4 flex items-center justify-between">
           <div>
-            <div className="flex items-center gap-2">
+            <div className="flex items-center gap-2.5">
               <span
-                className="h-3 w-3 rounded-full"
+                className="h-3.5 w-3.5 rounded-full ring-2 ring-white/50"
                 style={{ backgroundColor: color }}
               />
-              <span className="font-medium text-sm capitalize">
+              <span className="font-semibold text-sm capitalize">
                 {selectedBin.exchange}
               </span>
             </div>
-            <div className="text-xs text-muted-foreground mt-0.5">
-              Bin: {(bin.binEdgeLow * 100).toFixed(0)}% -{" "}
-              {(bin.binEdgeHigh * 100).toFixed(0)}% | n = {bin.count} |
+            <div className="text-xs text-muted-foreground mt-1">
+              Bin: {(bin.binEdgeLow * 100).toFixed(0)}%\u2013{(bin.binEdgeHigh * 100).toFixed(0)}% | n = {bin.count} |
               Observed: {(bin.observedFrequency * 100).toFixed(1)}%
             </div>
           </div>
           <button
             onClick={() => setDrawerOpen(false)}
-            className="p-1 rounded-md hover:bg-accent"
+            className="p-1.5 rounded-lg hover:bg-accent transition-colors"
           >
             <X className="h-4 w-4" />
           </button>
         </div>
 
         {/* Sort controls */}
-        <div className="px-4 py-2 border-b border-border flex items-center gap-2">
+        <div className="px-5 py-3 border-b border-border/60 flex items-center gap-2.5">
           <ArrowUpDown className="h-3 w-3 text-muted-foreground" />
           <span className="text-xs text-muted-foreground">Sort:</span>
           {(
@@ -117,10 +116,10 @@ export function BinDrawer({ open, byExchange }: BinDrawerProps) {
             <button
               key={mode}
               onClick={() => setSortMode(mode)}
-              className={`text-xs rounded px-2 py-0.5 transition-colors ${
+              className={`text-xs rounded-full px-2.5 py-0.5 font-medium transition-all ${
                 sortMode === mode
-                  ? "bg-primary text-primary-foreground"
-                  : "bg-muted text-muted-foreground hover:bg-accent"
+                  ? "bg-primary text-primary-foreground shadow-sm"
+                  : "bg-muted/60 text-muted-foreground hover:bg-accent"
               }`}
             >
               {label}
@@ -129,13 +128,13 @@ export function BinDrawer({ open, byExchange }: BinDrawerProps) {
         </div>
 
         {/* Market list */}
-        <div className="divide-y divide-border">
+        <div className="divide-y divide-border/40">
           {sortedMarkets.map((market) => (
-            <div key={market.id} className="px-4 py-3">
+            <div key={market.id} className="px-5 py-3.5 hover:bg-accent/20 transition-colors">
               <div className="text-sm font-medium leading-snug">
                 {market.title}
               </div>
-              <div className="flex items-center gap-3 mt-1.5 text-xs text-muted-foreground">
+              <div className="flex items-center gap-3 mt-2 text-xs text-muted-foreground">
                 <span>
                   Predicted:{" "}
                   <strong className="text-foreground">
@@ -147,8 +146,8 @@ export function BinDrawer({ open, byExchange }: BinDrawerProps) {
                   <strong
                     className={
                       market.outcome === 1
-                        ? "text-green-600"
-                        : "text-red-600"
+                        ? "text-emerald-600"
+                        : "text-red-500"
                     }
                   >
                     {market.outcome === 1 ? "Yes" : "No"}
@@ -156,12 +155,12 @@ export function BinDrawer({ open, byExchange }: BinDrawerProps) {
                 </span>
                 <span>
                   Surprise:{" "}
-                  <strong className="text-foreground">
+                  <strong className="text-amber-600">
                     {(surpriseScore(market) * 100).toFixed(0)}%
                   </strong>
                 </span>
               </div>
-              <div className="text-[10px] text-muted-foreground mt-1">
+              <div className="text-[10px] text-muted-foreground/60 mt-1">
                 Resolved:{" "}
                 {market.resolvedAt.toLocaleDateString()}
                 {market.metadata.volume !== undefined &&
@@ -172,7 +171,7 @@ export function BinDrawer({ open, byExchange }: BinDrawerProps) {
         </div>
 
         {sortedMarkets.length === 0 && (
-          <div className="px-4 py-8 text-center text-sm text-muted-foreground">
+          <div className="px-5 py-12 text-center text-sm text-muted-foreground">
             No markets in this bin
           </div>
         )}

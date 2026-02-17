@@ -1,7 +1,8 @@
 import { mkdirSync } from "fs";
-import { dirname } from "path";
+import { dirname, resolve } from "path";
 import Database from "better-sqlite3";
 import { drizzle } from "drizzle-orm/better-sqlite3";
+import { migrate } from "drizzle-orm/better-sqlite3/migrator";
 import * as schema from "./schema";
 
 const DATABASE_URL = process.env.DATABASE_URL ?? "./data/brier.db";
@@ -20,7 +21,18 @@ function createDrizzle() {
   // Enable WAL mode for better concurrent read performance
   sqlite.pragma("journal_mode = WAL");
 
-  return drizzle(sqlite, { schema });
+  const db = drizzle(sqlite, { schema });
+
+  // Auto-run migrations to ensure tables exist
+  try {
+    migrate(db, {
+      migrationsFolder: resolve(process.cwd(), "drizzle/migrations"),
+    });
+  } catch {
+    // Migrations may already be applied — that's fine
+  }
+
+  return db;
 }
 
 export const db = globalThis.__brier_db ?? createDrizzle();
