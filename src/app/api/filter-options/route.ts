@@ -1,5 +1,4 @@
 export const dynamic = "force-dynamic";
-
 import { NextResponse } from "next/server";
 import { getDistinctSeries, getDistinctTopics } from "@/lib/db/queries";
 
